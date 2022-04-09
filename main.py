@@ -14,15 +14,15 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
-@app.errorhandler(500)
-def internal_error(error):
-    return requests.get(f'https://http.cat/500').content
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return requests.get(f'https://http.cat/500').content
+#
+# @app.errorhandler(500)
+# def internal_error(error):
+#     return requests.get(f'https://http.cat/500').content
+#
+#
+# @app.errorhandler(404)
+# def not_found(error):
+#     return requests.get(f'https://http.cat/500').content
 
 
 @login_manager.user_loader
@@ -38,7 +38,7 @@ def index():
         games = db_sess.query(Games)
     else:
         games = db_sess.query(Games)
-    return render_template("index.html", news=games)
+    return render_template("index.html", games=games)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -57,7 +57,6 @@ def reqister():
         user = User(
             name=form.name.data,
             email=form.email.data,
-            about=form.about.data,
             type_of_user=1
         )
         user.set_password(form.password.data)
