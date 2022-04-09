@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, abort, make_response, url_for
+from flask import Flask, render_template, redirect, request, abort, send_file, url_for
 from data import db_session
 from data.users import User
 from data.games import Games
@@ -15,14 +15,18 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-# @app.errorhandler(500)
-# def internal_error(error):
-#     return requests.get(f'https://http.cat/500').content
-#
-#
-# @app.errorhandler(404)
-# def not_found(error):
-#     return requests.get(f'https://http.cat/500').content
+@app.errorhandler(500)
+def internal_error(error):
+    with open('static/img/mistake.jpg', 'wb') as file:
+        file.write(requests.get(f'https://http.cat/500').content)
+    return render_template('error.html')
+
+
+@app.errorhandler(404)
+def not_found(error):
+    with open('static/img/mistake.jpg', 'wb') as file:
+        file.write(requests.get(f'https://http.cat/404').content)
+    return render_template('error.html')
 
 
 @login_manager.user_loader
@@ -38,6 +42,7 @@ def index():
         games = db_sess.query(Games)
     else:
         games = db_sess.query(Games)
+
     return render_template("index.html", games=games)
 
 
