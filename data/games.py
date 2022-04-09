@@ -28,3 +28,5 @@ class Games(SqlAlchemyBase):
     # categories = orm.relation("Category",
     #                           secondary="association",
     #                           backref="games")
+    def __repr__(self):
+        return self.title

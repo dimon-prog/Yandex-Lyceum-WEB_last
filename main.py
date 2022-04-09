@@ -14,7 +14,7 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-#
+
 # @app.errorhandler(500)
 # def internal_error(error):
 #     return requests.get(f'https://http.cat/500').content
