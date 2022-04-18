@@ -15,6 +15,12 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
+@app.route("/games/<name>")
+def game(name):
+    db_sess = db_session.create_session()
+    game = db_sess.query(Games).filter(Games.title == name).one()
+    return render_template("game.html", params=game)
+
 @app.errorhandler(500)
 def internal_error(error):
     with open('static/img/mistake.jpg', 'wb') as file:
