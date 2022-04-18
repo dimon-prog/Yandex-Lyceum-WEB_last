@@ -11,7 +11,7 @@ class Games(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    picture = sqlalchemy.Column(sqlalchemy.BLOB, nullable=True)
+    picture = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     genre = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     content = sqlalchemy.Column(sqlalchemy.String, nullable=True)

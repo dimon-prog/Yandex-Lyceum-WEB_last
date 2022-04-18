@@ -42,7 +42,7 @@ def index():
         games = db_sess.query(Games).all()
     else:
         games = db_sess.query(Games).all()
-
+    print(games)
     return render_template("index.html", games=games)
 
 
