@@ -13,8 +13,13 @@
 <header>
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="/">Интернет-магазин</a>
+
         {% if current_user.is_authenticated %}
-    <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+        <p>
+        <a href="games" class="btn btn-secondary">Добавить игру</a>
+        <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+        </p>
+
 {% else %}
     <p>
         <a class="btn btn-primary " href="/register">Зарегистрироваться</a>

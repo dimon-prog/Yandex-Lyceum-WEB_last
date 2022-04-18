@@ -43,7 +43,7 @@
       /* Подпись под изображением */
       .text {
       color: #ffffff;
-      font-size: 15px;
+      font-size: 50px;
       padding: 8px 12px;
       position: absolute;
       bottom: 8px;
@@ -75,9 +75,9 @@
       /* Выцветание анимации */
       .fade {
       -webkit-animation-name: fade;
-      -webkit-animation-duration: 1.5s;
+      -webkit-animation-duration: 1.0s;
       animation-name: fade;
-      animation-duration: 1.5s;
+      animation-duration: 6.0s;
       }
       @-webkit-keyframes fade {
       from {opacity: .4}
@@ -106,9 +106,9 @@
     </div>
     <br>
     <div style="text-align:center">
-      <span class="dot" onclick="currentSlide(1)"></span>
-      <span class="dot" onclick="currentSlide(2)"></span>
-      <span class="dot" onclick="currentSlide(3)"></span>
+        {% for item in games %}
+            <span class="dot" onclick="currentSlide(2)"></span>
+        {% endfor %}
     </div>
     <script>
       var slideIndex = 0;
@@ -128,9 +128,7 @@
       }
     </script>
   <h1>Список игр</h1>
-{% if current_user.is_authenticated %}
-    <a href="games" class="btn btn-secondary">Добавить новость</a>
-{% endif %}
+
 {% for item in games%}
 <div class="col-md6 border rounded" onclick="location.href='/games/{{ item.title }}';">
     <h2>{{item.title}}</h2>

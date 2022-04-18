@@ -112,7 +112,7 @@ def add_games():
         db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
-    return render_template('games.html', title='Добавление новости',
+    return render_template('games.html', title='Добавление игры',
                            form=form)
 
 
