@@ -15,6 +15,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
+@app.route("/about_us")
+def about_us():
+    return render_template('about_us.html')
 @app.route("/games/<name>")
 def game(name):
     db_sess = db_session.create_session()

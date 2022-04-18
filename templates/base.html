@@ -8,11 +8,16 @@
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous">
     <title>{{title}}</title>
+
 </head>
 <body>
+
 <header>
     <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="/">Интернет-магазин</a>
+        <p>
+            <a href="#" class="btn btn-lg btn-secondary">Интернет-магазин MyGame</a>
+            <a href="/about_us" class="btn btn-secondary">О проекте</a>
+        </p>
 
         {% if current_user.is_authenticated %}
         <p>

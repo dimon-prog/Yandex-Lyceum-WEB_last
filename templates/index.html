@@ -42,7 +42,7 @@
       }
       /* Подпись под изображением */
       .text {
-      color: #ffffff;
+      color: #0000FF;
       font-size: 50px;
       padding: 8px 12px;
       position: absolute;
@@ -130,7 +130,8 @@
   <h1>Список игр</h1>
 
 {% for item in games%}
-<div class="col-md6 border rounded" onclick="location.href='/games/{{ item.title }}';">
+
+<div class="alert alert-danger" role="alert" onclick="location.href='/games/{{ item.title }}';">
     <h2>{{item.title}}</h2>
     <div>
         {{item.content}}
