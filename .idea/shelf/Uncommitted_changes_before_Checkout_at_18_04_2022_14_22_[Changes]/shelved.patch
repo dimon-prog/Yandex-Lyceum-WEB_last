@@ -1,0 +1,79 @@
+Index: templates/index.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{% extends \"base.html\" %}\r\n\r\n{% block content %}\r\n<h1>Записи в блоге</h1>\r\n{% if current_user.is_authenticated %}\r\n    <a href=\"games\" class=\"btn btn-secondary\">Добавить новость</a>\r\n{% endif %}\r\n{% for item in games%}\r\n<div class=\"col-md6 border rounded\">\r\n    <h2>{{item.title}}</h2>\r\n    <div>\r\n        {{item.content}}\r\n    </div>\r\n    <div>\r\n        Автор - {{item.user.name}}, Дата написания - {{item.created_date}}\r\n    </div>\r\n    {% if current_user.is_authenticated and current_user == item.user %}\r\n    <div>\r\n        <a href=\"/news/{{ item.id }}\" class=\"btn btn-warning\">\r\n            Изменить\r\n        </a>\r\n        <a href=\"/news_delete/{{ item.id }}\" class=\"btn btn-danger\">\r\n            Удалить\r\n        </a>\r\n    </div>\r\n{% endif %}\r\n</div>\r\n{% endfor %}\r\n{% endblock %}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/index.html b/templates/index.html
+--- a/templates/index.html	(revision e527cafbdb2273eac59519dc9268573832e949d7)
++++ b/templates/index.html	(date 1650277096576)
+@@ -1,6 +1,36 @@
+ {% extends "base.html" %}
+ 
+ {% block content %}
++<div class="all">
++    <input checked type="radio" name="respond" id="desktop">
++    <article id="slider">
++        <input checked type="radio" name="slider" id="switch1">
++        <input type="radio" name="slider" id="switch2">
++        <input type="radio" name="slider" id="switch3">
++        <input type="radio" name="slider" id="switch4">
++        <input type="radio" name="slider" id="switch5">
++        <div id="slides">
++            <div id="overflow">
++
++
++            </div>
++        </div>
++        <div id="controls">
++            <label for="switch1"></label>
++            <label for="switch2"></label>
++            <label for="switch3"></label>
++            <label for="switch4"></label>
++            <label for="switch5"></label>
++        </div>
++        <div id="active">
++            <label for="switch1"></label>
++            <label for="switch2"></label>
++            <label for="switch3"></label>
++            <label for="switch4"></label>
++            <label for="switch5"></label>
++        </div>
++    </article>
++</div>
+ <h1>Записи в блоге</h1>
+ {% if current_user.is_authenticated %}
+     <a href="games" class="btn btn-secondary">Добавить новость</a>
+@@ -23,7 +53,7 @@
+             Удалить
+         </a>
+     </div>
+-{% endif %}
++    {% endif %}
+ </div>
+ {% endfor %}
+ {% endblock %}
+\ No newline at end of file
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from flask import Flask, render_template, redirect, request, abort, send_file, url_for\r\nfrom data import db_session\r\nfrom data.users import User\r\nfrom data.games import Games\r\nfrom forms.user import RegisterForm, LoginForm\r\nfrom forms.news import NewsForm\r\nfrom flask_login import LoginManager, login_user, login_required, logout_user, current_user\r\n\r\nimport requests\r\n\r\napp = Flask(__name__)\r\napp.config['SECRET_KEY'] = 'yandexlyceum_secret_key'\r\n\r\nlogin_manager = LoginManager()\r\nlogin_manager.init_app(app)\r\n\r\n\r\n@app.errorhandler(500)\r\ndef internal_error(error):\r\n    with open('static/img/mistake.jpg', 'wb') as file:\r\n        file.write(requests.get(f'https://http.cat/500').content)\r\n    return render_template('error.html')\r\n\r\n\r\n@app.errorhandler(404)\r\ndef not_found(error):\r\n    with open('static/img/mistake.jpg', 'wb') as file:\r\n        file.write(requests.get(f'https://http.cat/404').content)\r\n    return render_template('error.html')\r\n\r\n\r\n@login_manager.user_loader\r\ndef load_user(user_id):\r\n    db_sess = db_session.create_session()\r\n    return db_sess.query(User).get(user_id)\r\n\r\n\r\n@app.route(\"/\")\r\ndef index():\r\n    db_sess = db_session.create_session()\r\n    if current_user.is_authenticated:\r\n        games = db_sess.query(Games)\r\n    else:\r\n        games = db_sess.query(Games)\r\n\r\n    return render_template(\"index.html\", games=games)\r\n\r\n\r\n@app.route('/register', methods=['GET', 'POST'])\r\ndef reqister():\r\n    form = RegisterForm()\r\n    if form.validate_on_submit():\r\n        if form.password.data != form.password_again.data:\r\n            return render_template('register.html', title='Регистрация',\r\n                                   form=form,\r\n                                   message=\"Пароли не совпадают\")\r\n        db_sess = db_session.create_session()\r\n        if db_sess.query(User).filter(User.email == form.email.data).first():\r\n            return render_template('register.html', title='Регистрация',\r\n                                   form=form,\r\n                                   message=\"Такой пользователь уже есть\")\r\n        user = User(\r\n            name=form.name.data,\r\n            email=form.email.data,\r\n            type_of_user=1\r\n        )\r\n        user.set_password(form.password.data)\r\n        db_sess.add(user)\r\n        db_sess.commit()\r\n        return redirect('/login')\r\n    return render_template('register.html', title='Регистрация', form=form)\r\n\r\n\r\n@app.route('/login', methods=['GET', 'POST'])\r\ndef login():\r\n    form = LoginForm()\r\n    if form.validate_on_submit():\r\n        db_sess = db_session.create_session()\r\n        user = db_sess.query(User).filter(User.email == form.email.data).first()\r\n        if user and user.check_password(form.password.data):\r\n            login_user(user, remember=form.remember_me.data)\r\n            return redirect(\"/\")\r\n        return render_template('login.html',\r\n                               message=\"Неправильный логин или пароль\",\r\n                               form=form)\r\n    return render_template('login.html', title='Авторизация', form=form)\r\n\r\n\r\n@app.route('/logout')\r\n@login_required\r\ndef logout():\r\n    logout_user()\r\n    return redirect(\"/\")\r\n\r\n\r\n@app.route('/games', methods=['GET', 'POST'])\r\n@login_required\r\ndef add_games():\r\n    form = NewsForm()\r\n    if form.validate_on_submit():\r\n        db_sess = db_session.create_session()\r\n        games = Games()\r\n        games.title = form.title.data\r\n        games.content = form.content.data\r\n        current_user.games.append(games)\r\n        db_sess.merge(current_user)\r\n        db_sess.commit()\r\n        return redirect('/')\r\n    return render_template('games.html', title='Добавление новости',\r\n                           form=form)\r\n\r\n\r\n@app.route('/games/<int:id>', methods=['GET', 'POST'])\r\n@login_required\r\ndef edit_games(id):\r\n    form = NewsForm()\r\n    if request.method == \"GET\":\r\n        db_sess = db_session.create_session()\r\n        games = db_sess.query(Games).filter(Games.id == id,\r\n                                            Games.user == current_user\r\n                                            ).first()\r\n        if games:\r\n            form.title.data = games.title\r\n            form.content.data = games.content\r\n            form.is_private.data = games.is_private\r\n        else:\r\n            abort(404)\r\n    if form.validate_on_submit():\r\n        db_sess = db_session.create_session()\r\n        games = db_sess.query(Games).filter(Games.id == id,\r\n                                            Games.user == current_user\r\n                                            ).first()\r\n        if games:\r\n            games.title = form.title.data\r\n            games.content = form.content.data\r\n            games.is_private = form.is_private.data\r\n            db_sess.commit()\r\n            return redirect('/')\r\n        else:\r\n            abort(404)\r\n    return render_template('games.html',\r\n                           title='Редактирование новости',\r\n                           form=form\r\n                           )\r\n\r\n\r\n@app.route('/games_delete/<int:id>', methods=['GET', 'POST'])\r\n@login_required\r\ndef games_delete(id):\r\n    db_sess = db_session.create_session()\r\n    games = db_sess.query(Games).filter(Games.id == id,\r\n                                        Games.user == current_user\r\n                                        ).first()\r\n    if games:\r\n        db_sess.delete(games)\r\n        db_sess.commit()\r\n    else:\r\n        abort(404)\r\n    return redirect('/')\r\n\r\n\r\ndef main():\r\n    db_session.global_init(\"db/digitalmarket.db\")\r\n    app.run()\r\n\r\n\r\nif __name__ == '__main__':\r\n    main()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+--- a/main.py	(revision e527cafbdb2273eac59519dc9268573832e949d7)
++++ b/main.py	(date 1650277312144)
+@@ -39,9 +39,9 @@
+ def index():
+     db_sess = db_session.create_session()
+     if current_user.is_authenticated:
+-        games = db_sess.query(Games)
++        games = db_sess.query(Games).all()
+     else:
+-        games = db_sess.query(Games)
++        games = db_sess.query(Games).all()
+ 
+     return render_template("index.html", games=games)
+ 
