@@ -39,9 +39,9 @@ def load_user(user_id):
 def index():
     db_sess = db_session.create_session()
     if current_user.is_authenticated:
-        games = db_sess.query(Games)
+        games = db_sess.query(Games).all()
     else:
-        games = db_sess.query(Games)
+        games = db_sess.query(Games).all()
 
     return render_template("index.html", games=games)
 
