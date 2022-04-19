@@ -58,6 +58,7 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
+    print(form.role.data)
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
@@ -68,10 +69,14 @@ def reqister():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
+        if form.role.data == 'Подписчик':
+            user_type = 0
+        elif form.role.data == 'Разработчик':
+            user_type = 1
         user = User(
             name=form.name.data,
             email=form.email.data,
-            type_of_user=1
+            type_of_user=user_type
         )
         user.set_password(form.password.data)
         db_sess.add(user)

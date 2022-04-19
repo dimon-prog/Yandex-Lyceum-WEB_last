@@ -21,8 +21,10 @@
 
         {% if current_user.is_authenticated %}
         <p>
-        <a href="games" class="btn btn-secondary">Добавить игру</a>
-        <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+            {% if current_user.type_of_user == 1 %}
+            <a href="games" class="btn btn-secondary">Добавить игру</a>
+        {% endif %}
+        <a href="/logout" class="navbar-brand" >{{ current_user.name }}</a>
         </p>
 
 {% else %}
