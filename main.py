@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, abort, make_response, url_for
+from flask import Flask, render_template, redirect, request, abort, send_file, url_for
 from data import db_session
 from data.users import User
 from data.games import Games
@@ -14,15 +14,28 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-#
-# @app.errorhandler(500)
-# def internal_error(error):
-#     return requests.get(f'https://http.cat/500').content
-#
-#
-# @app.errorhandler(404)
-# def not_found(error):
-#     return requests.get(f'https://http.cat/500').content
+
+@app.route("/about_us")
+def about_us():
+    return render_template('about_us.html')
+@app.route("/games/<name>")
+def game(name):
+    db_sess = db_session.create_session()
+    game = db_sess.query(Games).filter(Games.title == name).one()
+    return render_template("game.html", params=game)
+
+@app.errorhandler(500)
+def internal_error(error):
+    with open('static/img/mistake.jpg', 'wb') as file:
+        file.write(requests.get(f'https://http.cat/500').content)
+    return render_template('error.html')
+
+
+@app.errorhandler(404)
+def not_found(error):
+    with open('static/img/mistake.jpg', 'wb') as file:
+        file.write(requests.get(f'https://http.cat/404').content)
+    return render_template('error.html')
 
 
 @login_manager.user_loader
@@ -35,9 +48,10 @@ def load_user(user_id):
 def index():
     db_sess = db_session.create_session()
     if current_user.is_authenticated:
-        games = db_sess.query(Games)
+        games = db_sess.query(Games).all()
     else:
-        games = db_sess.query(Games)
+        games = db_sess.query(Games).all()
+    print(games)
     return render_template("index.html", games=games)
 
 
@@ -101,7 +115,7 @@ def add_games():
         db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
-    return render_template('games.html', title='Добавление новости',
+    return render_template('games.html', title='Добавление игры',
                            form=form)
 
 

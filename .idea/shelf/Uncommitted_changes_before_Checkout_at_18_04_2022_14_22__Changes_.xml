@@ -1,0 +1,9 @@
+<changelist name="Uncommitted_changes_before_Checkout_at_18_04_2022_14_22_[Changes]" date="1650277358193" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_18_04_2022_14_22_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Checkout at 18.04.2022 14:22 [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="db/digitalmarket.db" />
+    <option name="AFTER_PATH" value="db/digitalmarket.db" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_18_04_2022_14_22_[Changes]/digitalmarket.db" />
+  </binary>
+</changelist>
