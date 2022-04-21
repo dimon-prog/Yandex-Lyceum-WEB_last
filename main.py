@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, request, abort, send_file, u
 from data import db_session
 from data.users import User
 from data.games import Games
-from forms.user import RegisterForm, LoginForm
+from forms.user import RegisterForm, LoginForm, AdminForm
 from forms.news import NewsForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
@@ -18,6 +18,7 @@ login_manager.init_app(app)
 @app.route("/about_us")
 def about_us():
     return render_template('about_us.html')
+
 @app.route("/games/<name>")
 def game(name):
     db_sess = db_session.create_session()
@@ -58,7 +59,6 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
-    print(form.role.data)
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
@@ -83,6 +83,27 @@ def reqister():
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route("/admin", methods=['GET', 'POST'])
+def admin():
+    form = AdminForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        print(user)
+        if user is None:
+            return render_template('admin.html', title='Добавление админа',
+                                   form=form,
+                                   message="Такого пользователя не существует")
+        if user.name != form.name.data:
+            return render_template('admin.html', title='Добавление админа',
+                                   form=form,
+                                   message="У этого пользоваеля другое имя")
+        user.type_of_user = 2
+        db_sess.commit()
+        return redirect('/')
+    return render_template('admin.html', title='Добавление админа', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])

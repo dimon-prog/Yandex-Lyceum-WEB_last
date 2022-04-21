@@ -21,7 +21,10 @@
 
         {% if current_user.is_authenticated %}
         <p>
-            {% if current_user.type_of_user == 1 %}
+            {% if current_user.type_of_user == 2 %}
+            <a href="/admin" class="btn btn-secondary">Добавить администратора</a>
+        {% endif %}
+            {% if current_user.type_of_user == 1 or current_user.type_of_user == 2 %}
             <a href="games" class="btn btn-secondary">Добавить игру</a>
         {% endif %}
         <a href="/logout" class="navbar-brand" >{{ current_user.name }}</a>
