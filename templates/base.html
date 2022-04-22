@@ -21,7 +21,7 @@
 
         {% if current_user.is_authenticated %}
         <p>
-            {% if current_user.type_of_user == 2 %}
+            {% if current_user.type_of_user == 1 %}
             <a href="/admin" class="btn btn-secondary">Добавить администратора</a>
         {% endif %}
             {% if current_user.type_of_user == 1 or current_user.type_of_user == 2 %}

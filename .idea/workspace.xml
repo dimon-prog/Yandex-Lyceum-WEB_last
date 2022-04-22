@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c772561-8942-476a-a271-cc5ffa1b2f16" name="Changes" comment="Правильная навигация">
+    <list default="true" id="6c772561-8942-476a-a271-cc5ffa1b2f16" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/Yandex-Lyceum-WEB.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Yandex-Lyceum-WEB.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_18_04_2022_14_22__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_18_04_2022_14_22__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/digitalmarket.db" beforeDir="false" afterPath="$PROJECT_DIR$/db/digitalmarket.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/forms/news.py" beforeDir="false" afterPath="$PROJECT_DIR$/forms/news.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/games.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/games.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -73,9 +73,9 @@ def reqister():
                                    form=form,
                                    message="Такой пользователь уже есть")
         if form.role.data == 'Подписчик':
-            user_type = 0
+            user_type = 3
         elif form.role.data == 'Разработчик':
-            user_type = 1
+            user_type = 2
         user = User(
             name=form.name.data,
             email=form.email.data,
@@ -103,7 +103,7 @@ def admin():
             return render_template('admin.html', title='Добавление админа',
                                    form=form,
                                    message="У этого пользоваеля другое имя")
-        user.type_of_user = 2
+        user.type_of_user = 1
         db_sess.commit()
         return redirect('/')
     return render_template('admin.html', title='Добавление админа', form=form)
