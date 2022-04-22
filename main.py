@@ -18,11 +18,32 @@ login_manager.init_app(app)
 @app.route("/about_us")
 def about_us():
     return render_template('about_us.html')
+
+
 @app.route("/games/<name>")
 def game(name):
     db_sess = db_session.create_session()
     game = db_sess.query(Games).filter(Games.title == name).one()
+    f = open('basket.txt', 'a+')
+    f.write('\n')
+    f.write(game.title)
     return render_template("game.html", params=game)
+
+
+@app.route("/basket/<name>")
+def basket(name):
+    db_sess = db_session.create_session()
+    game = db_sess.query(Games).filter(Games.title == name).one()
+    f = open('basket.txt').read()
+    return render_template("basket.html", params=(game, f))
+
+
+@app.route("/basket_delete")
+def basket_delete():
+    f = open('basket.txt.txt', 'w')
+    f.close()
+    return render_template("basket.html")
+
 
 @app.errorhandler(500)
 def internal_error(error):
@@ -51,7 +72,6 @@ def index():
         games = db_sess.query(Games).all()
     else:
         games = db_sess.query(Games).all()
-    print(games)
     return render_template("index.html", games=games)
 
 
@@ -170,7 +190,7 @@ def games_delete(id):
 
 def main():
     db_session.global_init("db/digitalmarket.db")
-    app.run()
+    app.run(port=8080, host='127.0.0.1')
 
 
 if __name__ == '__main__':

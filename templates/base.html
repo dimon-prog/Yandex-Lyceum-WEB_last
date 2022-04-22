@@ -21,21 +21,25 @@
 
         {% if current_user.is_authenticated %}
         <p>
-        <a href="games" class="btn btn-secondary">Добавить игру</a>
-        <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+            <a href="games" class="btn btn-secondary">Добавить игру</a>
+            <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
         </p>
 
-{% else %}
-    <p>
-        <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
-        <a class="btn btn-success" href="/login">Войти</a>
-    </p>
-{% endif %}
+        {% else %}
+        <p>
+            <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+            <a class="btn btn-success" href="/login">Войти</a>
+        </p>
+        {% endif %}
     </nav>
 </header>
 <!-- Begin page content -->
 <main role="main" class="container">
     {% block content %}{% endblock %}
 </main>
+<p>
+    <a class="btn btn-warning " href="/basket">Корзина</a>
+</p>
+
 </body>
 </html>
