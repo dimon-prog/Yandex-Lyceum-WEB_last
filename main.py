@@ -1,9 +1,11 @@
-import requests
-from flask import Flask, render_template, redirect, request, abort
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-
+from flask import Flask, render_template, redirect, request, abort, send_file, url_for
 from data import db_session
 from data.games import Games
+from forms.user import RegisterForm, LoginForm, AdminForm
+from forms.news import NewsForm
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+
+import requests
 from data.users import User
 from forms.news import NewsForm, GameAddForm
 from forms.user import RegisterForm, LoginForm
@@ -25,7 +27,6 @@ def game(name):
     db_sess = db_session.create_session()
     game = db_sess.query(Games).filter(Games.title == name).one()
     return render_template("game.html", params=game)
-
 
 @app.errorhandler(500)
 def internal_error(error):
@@ -71,16 +72,41 @@ def reqister():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
+        if form.role.data == 'Подписчик':
+            user_type = 0
+        elif form.role.data == 'Разработчик':
+            user_type = 1
         user = User(
             name=form.name.data,
             email=form.email.data,
-            type_of_user=1
+            type_of_user=user_type
         )
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route("/admin", methods=['GET', 'POST'])
+def admin():
+    form = AdminForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        print(user)
+        if user is None:
+            return render_template('admin.html', title='Добавление админа',
+                                   form=form,
+                                   message="Такого пользователя не существует")
+        if user.name != form.name.data:
+            return render_template('admin.html', title='Добавление админа',
+                                   form=form,
+                                   message="У этого пользоваеля другое имя")
+        user.type_of_user = 2
+        db_sess.commit()
+        return redirect('/')
+    return render_template('admin.html', title='Добавление админа', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
