@@ -17,6 +17,8 @@ class GameAddForm(FlaskForm):
     picture = FileField('Иллюстрация игры', validators=[FileRequired()])
     genre = StringField('Жанр', validators=[DataRequired()])
     content = TextAreaField("Описание")
-    # TODO выпадающий список platform
+    archive = FileField('Файлы игры', validators=[FileRequired()])
+    platform = StringField('Поддерживаемые платформы', validators=[DataRequired()])
+    created_date = StringField("Год релиза", validators=[DataRequired()])
     submit = SubmitField('Применить')
 

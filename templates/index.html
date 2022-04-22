@@ -141,10 +141,10 @@
     </div>
     {% if current_user.is_authenticated and current_user == item.user or current_user.type_of_user == 1 %}
     <div>
-        <a href="/news/{{ item.id }}" class="btn btn-warning">
+        <a href="/games/{{ item.id }}" class="btn btn-warning">
             Изменить
         </a>
-        <a href="/news_delete/{{ item.id }}" class="btn btn-danger">
+        <a href="/games_delete/{{ item.id }}" class="btn btn-danger">
             Удалить
         </a>
     </div>
