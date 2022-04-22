@@ -1,12 +1,12 @@
-from flask import Flask, render_template, redirect, request, abort, send_file, url_for
-from data import db_session
-from data.users import User
-from data.games import Games
-from forms.user import RegisterForm, LoginForm
-from forms.news import NewsForm
+import requests
+from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
-import requests
+from data import db_session
+from data.games import Games
+from data.users import User
+from forms.news import NewsForm, GameAddForm
+from forms.user import RegisterForm, LoginForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -24,25 +24,7 @@ def about_us():
 def game(name):
     db_sess = db_session.create_session()
     game = db_sess.query(Games).filter(Games.title == name).one()
-    f = open('basket.txt', 'a+')
-    f.write('\n')
-    f.write(game.title)
     return render_template("game.html", params=game)
-
-
-@app.route("/basket/<name>")
-def basket(name):
-    db_sess = db_session.create_session()
-    game = db_sess.query(Games).filter(Games.title == name).one()
-    f = open('basket.txt').read()
-    return render_template("basket.html", params=(game, f))
-
-
-@app.route("/basket_delete")
-def basket_delete():
-    f = open('basket.txt.txt', 'w')
-    f.close()
-    return render_template("basket.html")
 
 
 @app.errorhandler(500)
@@ -72,6 +54,7 @@ def index():
         games = db_sess.query(Games).all()
     else:
         games = db_sess.query(Games).all()
+    print(games)
     return render_template("index.html", games=games)
 
 
@@ -125,18 +108,31 @@ def logout():
 @app.route('/games', methods=['GET', 'POST'])
 @login_required
 def add_games():
-    form = NewsForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        games = Games()
-        games.title = form.title.data
-        games.content = form.content.data
-        current_user.games.append(games)
-        db_sess.merge(current_user)
-        db_sess.commit()
+    form = GameAddForm()
+    if request.method == 'GET':
+        if form.is_submitted():
+            db_sess = db_session.create_session()
+            games = Games()
+            games.title = form.title.data
+            games.content = form.content.data
+            print("Smth")
+            print(form.picture.data)
+            current_user.games.append(games)
+            db_sess.merge(current_user)
+            db_sess.commit()
+
+            return redirect('/')
+        return render_template('games.html', title='Добавление игры',
+                               form=form)
+    elif request.method == 'POST':
+        print(request.files)
+        print(request.files['picture'])
+        f = request.files['picture']
+        print()
+        with open(f"static/img/{form.picture.data.filename}", 'wb') as file:
+            file.write(f.read())
+
         return redirect('/')
-    return render_template('games.html', title='Добавление игры',
-                           form=form)
 
 
 @app.route('/games/<int:id>', methods=['GET', 'POST'])
@@ -190,7 +186,7 @@ def games_delete(id):
 
 def main():
     db_session.global_init("db/digitalmarket.db")
-    app.run(port=8080, host='127.0.0.1')
+    app.run()
 
 
 if __name__ == '__main__':

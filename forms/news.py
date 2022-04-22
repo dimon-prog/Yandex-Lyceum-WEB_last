@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileRequired
 from wtforms import StringField, TextAreaField
-from wtforms import BooleanField, SubmitField
+from wtforms import BooleanField, SubmitField, FileField
 from wtforms.validators import DataRequired
 
 
@@ -9,3 +10,13 @@ class NewsForm(FlaskForm):
     content = TextAreaField("Содержание")
     is_private = BooleanField("Личное")
     submit = SubmitField('Применить')
+
+
+class GameAddForm(FlaskForm):
+    title = StringField('Название', validators=[DataRequired()])
+    picture = FileField('Иллюстрация игры', validators=[FileRequired()])
+    genre = StringField('Жанр', validators=[DataRequired()])
+    content = TextAreaField("Описание")
+    # TODO выпадающий список platform
+    submit = SubmitField('Применить')
+
