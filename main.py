@@ -1,12 +1,14 @@
 from flask import Flask, render_template, redirect, request, abort, send_file, url_for
 from data import db_session
-from data.users import User
 from data.games import Games
-from forms.user import RegisterForm, LoginForm
+from forms.user import RegisterForm, LoginForm, AdminForm
 from forms.news import NewsForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 import requests
+from data.users import User
+from forms.news import NewsForm, GameAddForm
+from forms.user import RegisterForm, LoginForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -18,6 +20,8 @@ login_manager.init_app(app)
 @app.route("/about_us")
 def about_us():
     return render_template('about_us.html')
+
+
 @app.route("/games/<name>")
 def game(name):
     db_sess = db_session.create_session()
@@ -58,7 +62,6 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
-    print(form.role.data)
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
@@ -70,9 +73,9 @@ def reqister():
                                    form=form,
                                    message="Такой пользователь уже есть")
         if form.role.data == 'Подписчик':
-            user_type = 0
+            user_type = 3
         elif form.role.data == 'Разработчик':
-            user_type = 1
+            user_type = 2
         user = User(
             name=form.name.data,
             email=form.email.data,
@@ -83,6 +86,27 @@ def reqister():
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route("/admin", methods=['GET', 'POST'])
+def admin():
+    form = AdminForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        print(user)
+        if user is None:
+            return render_template('admin.html', title='Добавление админа',
+                                   form=form,
+                                   message="Такого пользователя не существует")
+        if user.name != form.name.data:
+            return render_template('admin.html', title='Добавление админа',
+                                   form=form,
+                                   message="У этого пользоваеля другое имя")
+        user.type_of_user = 1
+        db_sess.commit()
+        return redirect('/')
+    return render_template('admin.html', title='Добавление админа', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -110,18 +134,31 @@ def logout():
 @app.route('/games', methods=['GET', 'POST'])
 @login_required
 def add_games():
-    form = NewsForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        games = Games()
-        games.title = form.title.data
-        games.content = form.content.data
-        current_user.games.append(games)
-        db_sess.merge(current_user)
-        db_sess.commit()
+    form = GameAddForm()
+    if request.method == 'GET':
+        if form.is_submitted():
+            db_sess = db_session.create_session()
+            games = Games()
+            games.title = form.title.data
+            games.content = form.content.data
+            print("Smth")
+            print(form.picture.data)
+            current_user.games.append(games)
+            db_sess.merge(current_user)
+            db_sess.commit()
+
+            return redirect('/')
+        return render_template('games.html', title='Добавление игры',
+                               form=form)
+    elif request.method == 'POST':
+        print(request.files)
+        print(request.files['picture'])
+        f = request.files['picture']
+        print()
+        with open(f"static/img/{form.picture.data.filename}", 'wb') as file:
+            file.write(f.read())
+
         return redirect('/')
-    return render_template('games.html', title='Добавление игры',
-                           form=form)
 
 
 @app.route('/games/<int:id>', methods=['GET', 'POST'])

@@ -2,7 +2,12 @@
 
 {% block content %}
 <img src="/static/img/{{params.picture}}" style="width:100%">
-<div><center><font size=9>{{ params.title }}</font></center></div>
+<div>
+    <center><font size=9>{{ params.title }}</font></center>
+</div>
 <!--ОФОРМИТЬ ВЫВОД-->
-
+<p>
+    <a class="btn btn-warning " href="/basket/{{params.title}}">Добавить в корзину</a>
+    </div>
+</p>
 {% endblock %}

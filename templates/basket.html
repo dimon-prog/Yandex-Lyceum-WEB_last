@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина</title>
+    <h1>Корзина</h1>
+</head>
+<body>
+<h1>{{params[0].title}}</h1>
+<h2>{{params[1]}}</h2>
+<h3><a href="/basket_delete" class="btn btn-danger">
+    очистить
+</a></h3>
+</body>
+{% endblock %}

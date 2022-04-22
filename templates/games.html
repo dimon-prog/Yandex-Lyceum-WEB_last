@@ -2,7 +2,8 @@
 
 {% block content %}
 <h1>Добавление игры</h1>
-<form action="" method="post">
+
+<form action="" method="post" enctype="multipart/form-data" >
     {{ form.hidden_tag() }}
     <p>
         {{ form.title.label }}<br>
@@ -13,6 +14,8 @@
             </p>
         {% endfor %}
     </p>
+    {{form.picture.label}}
+    {{form.picture(class="form-control")}}
     <p>
         {{ form.content.label }}<br>
         {{ form.content(class="form-control") }}<br>
@@ -22,8 +25,9 @@
             </p>
         {% endfor %}
     </p>
-    <p>{{ form.is_private() }} {{ form.is_private.label }}</p>
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}
 </form>
+
+
 {% endblock %}
