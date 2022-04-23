@@ -187,9 +187,7 @@ def edit_games(id):
     form = GameAddForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
-        game = db_sess.query(Games).filter(Games.id == id,
-                                            Games.user == current_user
-                                            ).first()
+        game = db_sess.query(Games).filter(Games.id == id).first()
         if game:
             form.title.data = game.title
             form.content.data = game.content
@@ -202,9 +200,7 @@ def edit_games(id):
             abort(404)
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        game = db_sess.query(Games).filter(Games.id == id,
-                                            Games.user == current_user
-                                            ).first()
+        game = db_sess.query(Games).filter(Games.id == id).first()
         if game:
             game.title = form.title.data
             game.content = form.content.data
