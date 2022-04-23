@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0f96fa4d-fbf4-4488-9e54-82ef81eb7996" name="Default Changelist" comment="исправлен баг редактирования">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    <list default="true" id="0f96fa4d-fbf4-4488-9e54-82ef81eb7996" name="Default Changelist" comment="картинка фона">
+      <change beforePath="$PROJECT_DIR$/basket.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +52,21 @@
       <option name="project" value="LOCAL" />
       <updated>1650733183842</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="слайдер ограничен">
+      <created>1650734435233</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1650734435233</updated>
+    </task>
+    <task id="LOCAL-00003" summary="картинка фона">
+      <created>1650734541886</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1650734541886</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -71,6 +83,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="исправлен баг редактирования" />
-    <option name="LAST_COMMIT_MESSAGE" value="исправлен баг редактирования" />
+    <MESSAGE value="слайдер ограничен" />
+    <MESSAGE value="картинка фона" />
+    <option name="LAST_COMMIT_MESSAGE" value="картинка фона" />
   </component>
 </project>
