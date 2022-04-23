@@ -141,7 +141,7 @@ def logout():
     return redirect("/")
 
 
-@app.route('/games', methods=['GET', 'POST'])
+@app.route('/game_add', methods=['GET', 'POST'])
 @login_required
 def add_games():
     form = GameAddForm()
