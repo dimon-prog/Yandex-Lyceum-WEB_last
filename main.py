@@ -8,9 +8,12 @@ from data.users import User
 from forms.news import NewsForm, GameAddForm
 from forms.user import AdminForm
 from forms.user import RegisterForm, LoginForm
+from flask_ngrok import run_with_ngrok
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+run_with_ngrok(app)
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
