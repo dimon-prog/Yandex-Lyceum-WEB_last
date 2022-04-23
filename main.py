@@ -9,7 +9,7 @@ from forms.news import GameAddForm
 from forms.user import AdminForm
 from forms.user import RegisterForm, LoginForm
 from flask_ngrok import run_with_ngrok
-
+from urllib.parse import urlparse
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 run_with_ngrok(app)
@@ -49,7 +49,7 @@ for error in range(400, 511):
                 file.write(requests.get(f'https://http.cat/{error.code}').content)
             return render_template('error.html')
     except Exception as e:
-        print(error)
+        print(f"Не удалось подключить к обработчику ошибку {error}")
 
 
 @login_manager.user_loader
@@ -162,13 +162,20 @@ def add_games():
             current_user.games.append(game)
             db_sess.merge(current_user)
             db_sess.commit()
+            o = urlparse(request.base_url)
+            # TODO there уведомление от бота Telegram
+            game_link = f"http://{o.netloc}/games/{game.title}"
+            print(game_link)
+
 
             photo = request.files['picture']
             archive = request.files['archive']
-            with open(f"static/img/{form.picture.data.filename}", 'wb') as file:
-                file.write(photo.read())
-            with open(f"game_archives/{form.archive.data.filename}", 'wb') as file:
-                file.write(archive.read())
+            if form.picture.data.filename:
+                with open(f"static/img/{form.picture.data.filename}", 'wb') as file:
+                    file.write(photo.read())
+            if form.archive.data.filename:
+                with open(f"game_archives/{form.archive.data.filename}", 'wb') as file:
+                    file.write(archive.read())
             return redirect('/')
         else:
             print("NO SUBMIT")
