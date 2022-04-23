@@ -6,8 +6,50 @@
     <center><font size=9>{{ params.title }}</font></center>
 </div>
 <!--ОФОРМИТЬ ВЫВОД-->
+<div>
+    <center><font size=9>Жанр {{ params.genre }}</font></center>
+</div>
+<div>
+    <center><font size=5>Описание:<br> {{ params.content }}</font></center>
+</div>
+<div>
+    <center><font size=9>Год релиза: {{params.created_date}}</font></center>
+</div>
+<div>
+    <center><font size=9>Поддерживаемые платформы: {{params.platform}}</font></center>
+</div>
+<div>
+    <center><font size=9>Автор(ы): {{params.user.name}}</font></center>
+</div>
+
+
 <p>
     <a class="btn btn-warning " href="/basket/{{params.title}}">Добавить в корзину</a>
-    </div>
+
 </p>
+<style>
+.button_1650645016176 {
+    display: inline-block !important;
+    text-decoration: none !important;
+    background-color: #ff2727 !important;
+    color: #001384 !important;
+    border: 3px solid #081920 !important;
+    border-radius: 62px !important;
+    font-size: 18px !important;
+    padding: 15px 47px !important;
+    transition: all 0.8s ease !important;
+}
+.button_1650645016176:hover{
+    text-decoration: none !important;
+    background-color: #006089 !important;
+    color: #ffeded !important;
+    border-color: #006089 !important;
+}
+</style>
+<a href="/download/{{params.archive}}" class="button_1650645016176" target="_blank">
+  Скачать файл
+</a>
+
+
+<!--Блоки комментариев игры-->
 {% endblock %}

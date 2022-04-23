@@ -1,20 +1,29 @@
-from flask import Flask, render_template, redirect, request, abort, send_file, url_for
+import requests
+from flask import Flask, render_template, redirect, request, abort, send_file
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from os import path
 from data import db_session
 from data.games import Games
-from forms.user import RegisterForm, LoginForm, AdminForm
-from forms.news import NewsForm
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-
-import requests
 from data.users import User
-from forms.news import NewsForm, GameAddForm
+from forms.news import GameAddForm
+from forms.user import AdminForm
 from forms.user import RegisterForm, LoginForm
-
+from flask_ngrok import run_with_ngrok
+from urllib.parse import urlparse
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+run_with_ngrok(app)
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+@app.route('/download/<filename>')
+def download(filename):
+    filepath = path.join(app.root_path, 'game_archives', filename)
+    print(filepath)
+    return send_file(filepath)
 
 
 @app.route("/about_us")
@@ -28,18 +37,19 @@ def game(name):
     game = db_sess.query(Games).filter(Games.title == name).one()
     return render_template("game.html", params=game)
 
-@app.errorhandler(500)
-def internal_error(error):
-    with open('static/img/mistake.jpg', 'wb') as file:
-        file.write(requests.get(f'https://http.cat/500').content)
-    return render_template('error.html')
 
-
-@app.errorhandler(404)
-def not_found(error):
-    with open('static/img/mistake.jpg', 'wb') as file:
-        file.write(requests.get(f'https://http.cat/404').content)
-    return render_template('error.html')
+# Ошибка клиента (400-499).
+# Ошибка сервера (500-510).
+# Источник: https://allerrorcodes.ru/http-2
+for error in range(400, 511):
+    try:
+        @app.errorhandler(error)
+        def any_error(error):
+            with open('static/img/mistake.jpg', 'wb') as file:
+                file.write(requests.get(f'https://http.cat/{error.code}').content)
+            return render_template('error.html')
+    except Exception as e:
+        print(f"Не удалось подключить к обработчику ошибку {error}")
 
 
 @login_manager.user_loader
@@ -131,66 +141,80 @@ def logout():
     return redirect("/")
 
 
-@app.route('/games', methods=['GET', 'POST'])
+@app.route('/game_add', methods=['GET', 'POST'])
 @login_required
 def add_games():
     form = GameAddForm()
     if request.method == 'GET':
-        if form.is_submitted():
-            db_sess = db_session.create_session()
-            games = Games()
-            games.title = form.title.data
-            games.content = form.content.data
-            print("Smth")
-            print(form.picture.data)
-            current_user.games.append(games)
-            db_sess.merge(current_user)
-            db_sess.commit()
-
-            return redirect('/')
         return render_template('games.html', title='Добавление игры',
                                form=form)
     elif request.method == 'POST':
-        print(request.files)
-        print(request.files['picture'])
-        f = request.files['picture']
-        print()
-        with open(f"static/img/{form.picture.data.filename}", 'wb') as file:
-            file.write(f.read())
+        if form.is_submitted():
+            db_sess = db_session.create_session()
+            game = Games()
+            game.title = form.title.data
+            game.content = form.content.data
+            game.picture = form.picture.data.filename
+            game.archive = form.archive.data.filename
+            game.genre = form.genre.data
+            game.platform = form.platform.data
+            game.created_date = form.created_date.data
+            current_user.games.append(game)
+            db_sess.merge(current_user)
+            db_sess.commit()
+            o = urlparse(request.base_url)
+            # TODO there уведомление от бота Telegram
+            game_link = f"http://{o.netloc}/games/{game.title}"
+            print(game_link)
 
-        return redirect('/')
+
+            photo = request.files['picture']
+            archive = request.files['archive']
+            if form.picture.data.filename:
+                with open(f"static/img/{form.picture.data.filename}", 'wb') as file:
+                    file.write(photo.read())
+            if form.archive.data.filename:
+                with open(f"game_archives/{form.archive.data.filename}", 'wb') as file:
+                    file.write(archive.read())
+            return redirect('/')
+        else:
+            print("NO SUBMIT")
 
 
 @app.route('/games/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_games(id):
-    form = NewsForm()
+    form = GameAddForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
-        games = db_sess.query(Games).filter(Games.id == id,
-                                            Games.user == current_user
-                                            ).first()
-        if games:
-            form.title.data = games.title
-            form.content.data = games.content
-            form.is_private.data = games.is_private
+        game = db_sess.query(Games).filter(Games.id == id).first()
+        if game:
+            form.title.data = game.title
+            form.content.data = game.content
+            # form.picture.label = game.picture
+            # form.archive.data.filename = game.archive
+            form.genre.data = game.genre
+            form.platform.data = game.platform
+            form.created_date.data = game.created_date
         else:
             abort(404)
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        games = db_sess.query(Games).filter(Games.id == id,
-                                            Games.user == current_user
-                                            ).first()
-        if games:
-            games.title = form.title.data
-            games.content = form.content.data
-            games.is_private = form.is_private.data
+        game = db_sess.query(Games).filter(Games.id == id).first()
+        if game:
+            game.title = form.title.data
+            game.content = form.content.data
+            # game.picture = form.picture.data.filename
+            # game.archive = form.archive.data.filename
+            game.genre = form.genre.data
+            game.platform = form.platform.data
+            game.created_date = form.created_date.data
             db_sess.commit()
             return redirect('/')
         else:
             abort(404)
     return render_template('games.html',
-                           title='Редактирование новости',
+                           title='Редактирование игры',
                            form=form
                            )
 

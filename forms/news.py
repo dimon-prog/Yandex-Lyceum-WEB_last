@@ -14,9 +14,11 @@ class NewsForm(FlaskForm):
 
 class GameAddForm(FlaskForm):
     title = StringField('Название', validators=[DataRequired()])
-    picture = FileField('Иллюстрация игры', validators=[FileRequired()])
+    picture = FileField('Иллюстрация игры')
     genre = StringField('Жанр', validators=[DataRequired()])
     content = TextAreaField("Описание")
-    # TODO выпадающий список platform
+    archive = FileField('Файлы игры')
+    platform = StringField('Поддерживаемые платформы', validators=[DataRequired()])
+    created_date = StringField("Год релиза", validators=[DataRequired()])
     submit = SubmitField('Применить')
 
