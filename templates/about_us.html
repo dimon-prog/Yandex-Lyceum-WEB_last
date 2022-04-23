@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>О нас</title>
-    <p>здесь будет описание</p>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+<div><font size=10>Интернет-магазин приложений MyGame</font></div>
+<div><font size=5>это проект, созданный в рамках образовательного курса
+    "Основы промышленного программирования" Лицея Академии Яндекса.</font></div>
+<div><font size=5>Создатели проекта:<br>
+    Климов Фёдор <a href="https://vk.me/id">Написать в VK</a><br>
+    Швецов Егор <a href="https://vk.me/shvetsovegor">Написать в VK</a><br>
+    Скребнев Дмитрий <a href="https://vk.me/id">Написать в VK</a></font></div>
+<div><font size=5>Целью нашего сайта является предоставление начинающим разработчикам
+    возможности выкладывать свои приложения,
+    а остальным пользователям возможности эти приложения покупать.</font></div>
+{% endblock %}
