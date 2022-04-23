@@ -5,7 +5,7 @@ from os import path
 from data import db_session
 from data.games import Games
 from data.users import User
-from forms.news import NewsForm, GameAddForm
+from forms.news import GameAddForm
 from forms.user import AdminForm
 from forms.user import RegisterForm, LoginForm
 from flask_ngrok import run_with_ngrok
@@ -177,27 +177,35 @@ def add_games():
 @app.route('/games/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_games(id):
-    form = NewsForm()
+    form = GameAddForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
-        games = db_sess.query(Games).filter(Games.id == id,
+        game = db_sess.query(Games).filter(Games.id == id,
                                             Games.user == current_user
                                             ).first()
-        if games:
-            form.title.data = games.title
-            form.content.data = games.content
-            form.is_private.data = games.is_private
+        if game:
+            form.title.data = game.title
+            form.content.data = game.content
+            # form.picture.label = game.picture
+            # form.archive.data.filename = game.archive
+            form.genre.data = game.genre
+            form.platform.data = game.platform
+            form.created_date.data = game.created_date
         else:
             abort(404)
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        games = db_sess.query(Games).filter(Games.id == id,
+        game = db_sess.query(Games).filter(Games.id == id,
                                             Games.user == current_user
                                             ).first()
-        if games:
-            games.title = form.title.data
-            games.content = form.content.data
-            games.is_private = form.is_private.data
+        if game:
+            game.title = form.title.data
+            game.content = form.content.data
+            # game.picture = form.picture.data.filename
+            # game.archive = form.archive.data.filename
+            game.genre = form.genre.data
+            game.platform = form.platform.data
+            game.created_date = form.created_date.data
             db_sess.commit()
             return redirect('/')
         else:
