@@ -38,18 +38,18 @@ def game(name):
     return render_template("game.html", params=game)
 
 
-@app.errorhandler(500)
-def internal_error(error):
-    with open('static/img/mistake.jpg', 'wb') as file:
-        file.write(requests.get(f'https://http.cat/500').content)
-    return render_template('error.html')
-
-
-@app.errorhandler(404)
-def not_found(error):
-    with open('static/img/mistake.jpg', 'wb') as file:
-        file.write(requests.get(f'https://http.cat/404').content)
-    return render_template('error.html')
+# Ошибка клиента (400-499).
+# Ошибка сервера (500-510).
+# Источник: https://allerrorcodes.ru/http-2
+for error in range(400, 511):
+    try:
+        @app.errorhandler(error)
+        def any_error(error):
+            with open('static/img/mistake.jpg', 'wb') as file:
+                file.write(requests.get(f'https://http.cat/{error.code}').content)
+            return render_template('error.html')
+    except Exception as e:
+        print(error)
 
 
 @login_manager.user_loader
