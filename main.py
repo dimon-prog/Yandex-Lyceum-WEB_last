@@ -66,7 +66,9 @@ def index():
     else:
         games = db_sess.query(Games).all()
     print(games)
-    return render_template("index.html", games=games)
+    games_slider = games[:6]
+    print(games_slider)
+    return render_template("index.html", games=games, games_slider=games_slider)
 
 
 @app.route('/register', methods=['GET', 'POST'])

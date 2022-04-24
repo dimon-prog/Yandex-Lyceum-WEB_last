@@ -94,8 +94,8 @@
     </style>
   </head>
     <div class="slideshow-container">
-        {% for item in games %}
-              <div class="mySlides fade" onclick="location.href='/games/{{ item.title }}';">
+        {% for item in games_slider %}
+              <div class="mySlides" onclick="location.href='/games/{{ item.title }}';">
                 <img src="/static/img/{{item.picture}}" style="width:100%">
                 <div class="text">{{item.title}}</div>
               </div>
@@ -106,7 +106,7 @@
     </div>
     <br>
     <div style="text-align:center">
-        {% for item in games %}
+        {% for item in games_slider %}
             <span class="dot" onclick="currentSlide(2)"></span>
         {% endfor %}
     </div>
