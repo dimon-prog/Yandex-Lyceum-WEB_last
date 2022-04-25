@@ -44,6 +44,5 @@ async def unsubscribe(message: types.Message):
         await message.answer("Вы успешно отписаны от рассылки.")
 
 
-
-# if __name__ == '__main__':
-# executor.start_polling(dp, skip_updates=True)
+if __name__ == '__main__':
+    executor.start_polling(dp, skip_updates=True)

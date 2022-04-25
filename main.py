@@ -172,8 +172,9 @@ def add_games():
             game_link = f"http://{o.netloc}/games/{game.title}"
             token = '5386498526:AAHZ8meO7jhXie1memP5E-0JqK-rM91OEdw'
             all = db.get_subscriptions()
+            print(all)
             for i in range(len(all)):
-                id = all[i]
+                id = all[i][0]
                 text = 'Привет, вышла новая видеоигра, почему бы не скачать?'
                 response = requests.get(f'https://api.telegram.org/bot{token}/sendMessage?chat_id={id}&text={text},{game_link}')
                 print(response)

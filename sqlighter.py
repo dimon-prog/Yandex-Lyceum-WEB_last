@@ -4,13 +4,13 @@ class SQLighter:
 
     def __init__(self, database):
         """Подключаемся к БД и сохраняем курсор соединения"""
-        self.connection = sqlite3.connect(database)
+        self.connection = sqlite3.connect(database, check_same_thread=False)
         self.cursor = self.connection.cursor()
 
     def get_subscriptions(self, status = True):
         """Получаем всех активных подписчиков бота"""
         with self.connection:
-            return self.cursor.execute("SELECT * FROM `subscriptions` WHERE `status` = ?", (status,)).fetchall()
+            return self.cursor.execute("SELECT user_id FROM subscriptions WHERE status = '1'").fetchall()
 
     def subscriber_exists(self, user_id):
         """Проверяем, есть ли уже юзер в базе"""
