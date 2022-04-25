@@ -14,10 +14,10 @@ from sqlighter import SQLighter
 import logging
 import config
 from bot import bot, dp, db
-
+from flask_ngrok import run_with_ngrok
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-
+run_with_ngrok(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -168,16 +168,15 @@ def add_games():
             db_sess.merge(current_user)
             db_sess.commit()
             o = urlparse(request.base_url)
-            # TODO there уведомление от бота Telegram
             game_link = f"http://{o.netloc}/games/{game.title}"
             token = '5386498526:AAHZ8meO7jhXie1memP5E-0JqK-rM91OEdw'
             all = db.get_subscriptions()
             print(all)
             for i in range(len(all)):
                 id = all[i][0]
-                text = 'Привет, вышла новая видеоигра, почему бы не скачать?'
-                response = requests.get(f'https://api.telegram.org/bot{token}/sendMessage?chat_id={id}&text={text},{game_link}')
-                print(response)
+                text = f'Привет, вышла новая видеоигра "{game.title}" в жанре {game.genre}, почему бы не скачать? ' \
+                       f'Держи ссылку {game_link}'
+                response = requests.get(f'https://api.telegram.org/bot{token}/sendMessage?chat_id={id}&text={text}')
             photo = request.files['picture']
             archive = request.files['archive']
             if form.picture.data.filename:
@@ -233,9 +232,7 @@ def edit_games(id):
 @login_required
 def games_delete(id):
     db_sess = db_session.create_session()
-    games = db_sess.query(Games).filter(Games.id == id,
-                                        Games.user == current_user
-                                        ).first()
+    games = db_sess.query(Games).filter(Games.id == id).first()
     if games:
         db_sess.delete(games)
         db_sess.commit()
