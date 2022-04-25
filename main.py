@@ -8,12 +8,15 @@ from data.users import User
 from forms.news import GameAddForm
 from forms.user import AdminForm
 from forms.user import RegisterForm, LoginForm
-from flask_ngrok import run_with_ngrok
 from urllib.parse import urlparse
+from aiogram import Bot, Dispatcher, executor, types
+from sqlighter import SQLighter
+import logging
+import config
+from bot import bot, dp, db
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-run_with_ngrok(app)
-
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -167,9 +170,13 @@ def add_games():
             o = urlparse(request.base_url)
             # TODO there уведомление от бота Telegram
             game_link = f"http://{o.netloc}/games/{game.title}"
-            print(game_link)
-
-
+            token = '5386498526:AAHZ8meO7jhXie1memP5E-0JqK-rM91OEdw'
+            all = db.get_subscriptions()
+            for i in range(len(all)):
+                id = all[i]
+                text = 'Привет, вышла новая видеоигра, почему бы не скачать?'
+                response = requests.get(f'https://api.telegram.org/bot{token}/sendMessage?chat_id={id}&text={text},{game_link}')
+                print(response)
             photo = request.files['picture']
             archive = request.files['archive']
             if form.picture.data.filename:
@@ -243,3 +250,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    executor.start_polling(dp)
