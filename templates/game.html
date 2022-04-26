@@ -1,52 +1,47 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div>
+    <img height=100% width=100% src="/static/img/{{params.picture}}" >
+</div>
 
-<img src="/static/img/{{params.picture}}" style="width:100%">
-<div>
-    <center><font size=9>{{ params.title }}</font></center>
-</div>
-<!--ОФОРМИТЬ ВЫВОД-->
-<div>
-    <center><font size=9>Жанр {{ params.genre }}</font></center>
-</div>
-<div>
-    <center><font size=5>Описание:<br> {{ params.content }}</font></center>
-</div>
-<div>
-    <center><font size=9>Год релиза: {{params.created_date}}</font></center>
-</div>
-<div>
-    <center><font size=9>Поддерживаемые платформы: {{params.platform}}</font></center>
-</div>
-<div>
-    <center><font size=9>Автор(ы): {{params.user.name}}</font></center>
-</div>
+<h1>{{ params.title }}</h1>
+
+
+<h2>Жанр {{ params.genre }}</h2>
+
+
+<h2>Описание:<br> {{ params.content }}</h2>
+
+<h2>Год релиза: {{params.created_date}}</h2>
+
+<h2>Поддерживаемые платформы: {{params.platform}}</h2>
+
+<h2>Автор(ы): {{params.user.name}}</h2>
+
 
 <style>
-.body { background: url(static/img/background.png) }
-.button_1650645016176 {
+.button_1650989547198 {
     display: inline-block !important;
     text-decoration: none !important;
-    background-color: #ff2727 !important;
-    color: #001384 !important;
-    border: 3px solid #081920 !important;
-    border-radius: 62px !important;
-    font-size: 18px !important;
-    padding: 15px 47px !important;
-    transition: all 0.8s ease !important;
+    background-color: #eaeaea !important;
+    color: #006089 !important;
+    border: 6px solid #006089 !important;
+    border-radius: 100px !important;
+    font-size: 21px !important;
+    padding: 8px 18px !important;
+    transition: all 0.2s ease !important;
 }
-.button_1650645016176:hover{
+.button_1650989547198:hover{
     text-decoration: none !important;
     background-color: #006089 !important;
     color: #ffeded !important;
     border-color: #006089 !important;
 }
 </style>
-<p align="center" href="/download/{{params.archive}}" class="button_1650645016176" target="_blank">
-  Скачать файл
-</p>
-
+<a href="/download/{{params.archive}}" class="button_1650989547198" target="_blank">
+  Скачать
+</a>
 
 <!--Блоки комментариев игры-->
 {% endblock %}

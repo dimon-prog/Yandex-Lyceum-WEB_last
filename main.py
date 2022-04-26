@@ -1,20 +1,20 @@
+from os import path
+from urllib.parse import urlparse
+from config import API_TOKEN as token
 import requests
+from aiogram import executor
 from flask import Flask, render_template, redirect, request, abort, send_file
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from os import path
+from flask_ngrok import run_with_ngrok
+
+from bot import dp, db
 from data import db_session
 from data.games import Games
 from data.users import User
-from forms.news import GameAddForm
+from forms.games import GameAddForm
 from forms.user import AdminForm
 from forms.user import RegisterForm, LoginForm
-from urllib.parse import urlparse
-from aiogram import Bot, Dispatcher, executor, types
-from sqlighter import SQLighter
-import logging
-import config
-from bot import bot, dp, db
-from flask_ngrok import run_with_ngrok
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 run_with_ngrok(app)
@@ -25,7 +25,6 @@ login_manager.init_app(app)
 @app.route('/download/<filename>')
 def download(filename):
     filepath = path.join(app.root_path, 'game_archives', filename)
-    print(filepath)
     return send_file(filepath)
 
 
@@ -37,8 +36,11 @@ def about_us():
 @app.route("/games/<name>")
 def game(name):
     db_sess = db_session.create_session()
-    game = db_sess.query(Games).filter(Games.title == name).one()
-    return render_template("game.html", params=game)
+    game = db_sess.query(Games).filter(Games.title == name)
+    try:
+        return render_template("game.html", params=game.one())
+    except Exception as e:
+        return abort(404)
 
 
 # Ошибка клиента (400-499).
@@ -169,7 +171,6 @@ def add_games():
             db_sess.commit()
             o = urlparse(request.base_url)
             game_link = f"http://{o.netloc}/games/{game.title}"
-            token = '5386498526:AAHZ8meO7jhXie1memP5E-0JqK-rM91OEdw'
             all = db.get_subscriptions()
             print(all)
             for i in range(len(all)):
@@ -213,8 +214,6 @@ def edit_games(id):
         if game:
             game.title = form.title.data
             game.content = form.content.data
-            # game.picture = form.picture.data.filename
-            # game.archive = form.archive.data.filename
             game.genre = form.genre.data
             game.platform = form.platform.data
             game.created_date = form.created_date.data
@@ -248,4 +247,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    executor.start_polling(dp)
