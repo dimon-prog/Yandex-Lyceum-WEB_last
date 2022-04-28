@@ -24,6 +24,7 @@ class Games(SqlAlchemyBase):
     archive = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     user_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("users.id"))
+
     user = orm.relation('User')
     # categories = orm.relation("Category",
     #                           secondary="association",

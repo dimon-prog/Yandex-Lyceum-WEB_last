@@ -1,12 +1,17 @@
 from os import path
 from urllib.parse import urlparse
+
+import werkzeug
+
 from config import API_TOKEN as token
 import requests
 from aiogram import executor
 from flask import Flask, render_template, redirect, request, abort, send_file
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user, AnonymousUserMixin
 from flask_ngrok import run_with_ngrok
 
+from data.comments import Comments
+from forms.comments import LeaveAComment
 from bot import dp, db
 from data import db_session
 from data.games import Games
@@ -33,14 +38,46 @@ def about_us():
     return render_template('about_us.html')
 
 
-@app.route("/games/<name>")
+@app.route("/games/<name>", methods=['GET', 'POST'])
 def game(name):
     db_sess = db_session.create_session()
-    game = db_sess.query(Games).filter(Games.title == name)
-    try:
-        return render_template("game.html", params=game.one())
-    except Exception as e:
-        return abort(404)
+    form = LeaveAComment()
+    if request.method == 'GET':
+        db_sess = db_session.create_session()
+        game = db_sess.query(Games).filter(Games.title == name).one()
+        comments = db_sess.query(Comments).filter(Comments.game_id == game.id).all()
+
+        comments_lst = []
+        for comment in comments:
+
+            comments_lst += [[comment.content, db_sess.query(User).filter(User.id == int(comment.user_id)).one()]]
+        print(comments_lst)
+        try:
+            return render_template("game.html", params=game, form=form, comments=comments_lst)
+        except Exception as e:
+            print(e)
+            return abort(404)
+    elif request.method == 'POST':
+        db_sess = db_session.create_session()
+        game = db_sess.query(Games).filter(Games.title == name).one()
+        if form.is_submitted():
+
+            if not current_user.is_authenticated:
+                return redirect("/register")
+            comment = Comments()
+            comment.user_id = current_user.id
+            comment.game_id = game.id
+            comment.content = form.content.data
+            db_sess.add(comment)
+            db_sess.commit()
+
+        comments = db_sess.query(Comments).filter(Comments.game_id == game.id).all()
+        comments_lst = []
+        for comment in comments:
+
+            comments_lst += [[comment.content, db_sess.query(User).filter(User.id == int(comment.user_id)).one()]]
+        print(comments_lst)
+        return render_template("game.html", params=game, form=form, comments=comments_lst)
 
 
 # Ошибка клиента (400-499).

@@ -43,5 +43,20 @@
   Скачать
 </a>
 
+
 <!--Блоки комментариев игры-->
+<div class="alert alert-primary" role="alert">
+<form action="" method="post" enctype="multipart/form-data" >
+    {{ form.content.label }}<br>
+    {{ form.content(class="form-control")}}<br>
+    {{ form.submit(type="submit", class="btn btn-secondary") }}<br>
+</form>
+</div>
+
+{% for content, author in comments %}
+<div class="alert alert-primary" role="alert">
+    {{author}}<br>
+    {{content}}<br>
+</div>
+{% endfor %}
 {% endblock %}
