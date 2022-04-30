@@ -279,7 +279,15 @@ def games_delete(id):
 
 def main():
     db_session.global_init("db/digitalmarket.db")
-    app.run()
+    db_session.global_init('db_2.db) # уберём параметр
+
+   # если в базе пусто, заполним её тестовыми данными (это не обязательно)
+   session = db_session.create_session()
+   if not session.query(User).first():
+       import fill_base
+
+   app.run(host='0.0.0.0', port=os.environ.get("PORT", 5000))
+
 
 
 if __name__ == '__main__':
